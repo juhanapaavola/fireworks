@@ -19,7 +19,9 @@ game.RocketEntity = me.ObjectEntity.extend({
 		this.targetX = settings.targetX;
 		this.targetY = settings.targetY;
 		this.targetRect = new me.Rect(new me.Vector2d(this.targetX-5,this.targetY-5),10,10);
-		this.updateColRect(0,5,0,5);
+		this.addShape(this.clone());
+		this.shapes[0].pos.set(0,5);
+		this.shapes[0].resize (this.width, 5);
 		var dx = this.targetX-x;
 		var dy = this.targetY-y;
 		var len = Math.sqrt(dx*dx+dy*dy);
@@ -38,27 +40,15 @@ game.RocketEntity = me.ObjectEntity.extend({
 		this.rgb.g = g;
 		this.rgb.b = b;
 		
-		r = r.toString(16);
-		if(r.length<2){
-			r='0'+r;
-		}
-		g = g.toString(16);
-		if(g.length<2){
-			g='0'+g;
-		}
-		b = b.toString(16);
-		if(b.length<2){
-			b='0'+b;
-		}
-		this.rgb.rgb = r+g+b;
+		this.HexColor = (new me.Color(r, g, b, 1)).toHex();
 		
 //		console.log("RocketEntity:init: "+this.pos+" vel: "+this.vel+" dx: "+dx+" dy: "+dy+" speed: "+speed+" rgb: "+this.rgb.rgb);
 	},
 
-	update:function(){
+	update:function(dt){
 		var res = this.collideType(this.type);
 		if(res){
-			me.game.remove(this);
+			me.game.world.removeChild(this);
 			me.event.publish("/rocket/removed");
 			
 			// particle explosion			
@@ -77,7 +67,7 @@ game.RocketEntity = me.ObjectEntity.extend({
 			}
 		}else{
 			this.updateMovement();			
-			this.parent();
+			this.parent(dt);
 			return true;			
 		}
 		return false;
@@ -89,16 +79,16 @@ game.RocketEntity = me.ObjectEntity.extend({
 			var x = 1*Math.cos(step);
 			var y = 1*Math.sin(step);
 			var target = new me.Vector2d(this.pos.x+x,this.pos.y+y);
-			var p1 = me.entityPool.newInstanceOf("particle",this.pos.x,this.pos.y,
-				{image:'empty',spriteheight:2,spritewidth:2,live:livetime,dir:target,rgb:this.rgb,speed:speed,size:particleSize}
+			var p1 = me.pool.pull("particle",this.pos.x,this.pos.y,
+				{image:'empty',width:2,height:2,spriteheight:2,spritewidth:2,live:livetime,dir:target,rgb:this.rgb,speed:speed,size:particleSize}
 			);				
-			me.game.add(p1,this.z+1);
+			me.game.world.addChild(p1,this.z+1);
 			step+=360/howMany;					
 		}					
 	},
 	
 	draw:function(context){
-		context.fillStyle="#"+this.rgb.rgb;
+		context.fillStyle=this.HexColor;
 		context.fillRect(this.pos.x,this.pos.y,2,2);
 	}
 });
