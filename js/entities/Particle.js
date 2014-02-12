@@ -1,4 +1,4 @@
-game.ParticleEntity = me.ObjectEntity.extend({
+game.ParticleEntity = me.Renderable.extend({
 
 	rgb:null,
 	live: 0,
@@ -7,16 +7,16 @@ game.ParticleEntity = me.ObjectEntity.extend({
 	size:1,
 	
 	init: function(x, y, settings) {
-		this.parent(x, y, settings);
-		this.setVelocity(4, 4);
-		this.gravity=0;
-		this.collidable = false;
+		this.parent(new me.Vector2d(x, y), settings.width, settings.height);
+		//this.setVelocity(4, 4);
 		this.color = new me.Color(settings.rgb.r, settings.rgb.g, settings.rgb.b, 1);
 		this.target = settings.dir;
 		this.live = settings.live*10; // livetime between 10-1, opacity from 1.0->0 by 0.1 steps = x*10
 		this.speed = settings.speed;
 		this.size = settings.size;
 		
+		this.vel = new me.Vector2d();
+
 		var dx = this.target.x-x;
 		var dy = this.target.y-y;
 		var len = Math.sqrt(dx*dx+dy*dy);
@@ -47,8 +47,8 @@ game.ParticleEntity = me.ObjectEntity.extend({
 	},
 	
 	update:function(){
-		this.updateMovement();
-		return false;
+		this.pos.add(this.vel);
+		return true;
 	},
 	
 	draw:function(ctx){		
