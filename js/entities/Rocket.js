@@ -80,7 +80,7 @@ game.RocketEntity = me.ObjectEntity.extend({
 			var y = 1*Math.sin(step);
 			var target = new me.Vector2d(this.pos.x+x,this.pos.y+y);
 			var p1 = me.pool.pull("particle",this.pos.x,this.pos.y,
-				{image:'empty',width:2,height:2,spriteheight:2,spritewidth:2,live:livetime,dir:target,rgb:this.rgb,speed:speed,size:particleSize}
+				{live:livetime,dir:target,rgb:this.rgb,speed:speed,size:particleSize}
 			);				
 			me.game.world.addChild(p1,this.z+1);
 			step+=360/howMany;					

@@ -7,23 +7,20 @@ game.ParticleEntity = me.Renderable.extend({
 	size:1,
 	
 	init: function(x, y, settings) {
-		this.parent(new me.Vector2d(x, y), settings.width, settings.height);
-		//this.setVelocity(4, 4);
+		this.parent(this.pos.set(x, y), settings.size, settings.size);
 		this.color = new me.Color(settings.rgb.r, settings.rgb.g, settings.rgb.b, 1);
 		this.target = settings.dir;
 		this.live = settings.live*10; // livetime between 10-1, opacity from 1.0->0 by 0.1 steps = x*10
 		this.speed = settings.speed;
 		this.size = settings.size;
 		
-		this.vel = new me.Vector2d();
-
 		var dx = this.target.x-x;
 		var dy = this.target.y-y;
 		var len = Math.sqrt(dx*dx+dy*dy);
 		dx/=len;
 		dy/=len;
-		this.vel.x = dx*this.speed;
-		this.vel.y = dy*this.speed;
+        
+		this.vel =  new me.Vector2d(dx*this.speed, dy*this.speed);
 
 		this.cacheColor = this.color.toRGBA();
 		
