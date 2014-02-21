@@ -46,7 +46,7 @@ game.RocketEntity = me.ObjectEntity.extend({
 	},
 
 	update:function(dt){
-		var res = this.collideType(this.type);
+		var res = me.game.world.collideType(this, this.type);
 		if(res){
 			me.game.world.removeChild(this);
 			me.event.publish("/rocket/removed");
