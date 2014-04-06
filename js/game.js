@@ -13,7 +13,7 @@ var game = {
 	// add "#debug" to the URL to enable the debug Panel
 	if (document.location.hash === "#debug") {
 		window.onReady(function () {
-			me.plugin.register.defer(debugPanel, "debug");
+			me.plugin.register.defer(this, debugPanel, "debug");
 		});
 	}
 	me.debug.renderHitBox = true;
@@ -33,6 +33,10 @@ var game = {
 	// Run on game resources loaded.
 	"loaded" : function () {
 		me.state.set(me.state.PLAY, new game.PlayScreen());
+
+		me.pool.register("rocket", game.RocketEntity,true);
+		me.pool.register("rocketTarget", game.RocketTargetEntity,true);
+		me.pool.register("particle", game.ParticleEntity,true);
 
 		// Start the game.
 		me.state.change(me.state.PLAY);
